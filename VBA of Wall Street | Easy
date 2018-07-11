@@ -1,0 +1,45 @@
+Sub Multi_Year():
+
+For Each ws In Worksheets:
+
+    Dim ticker As String
+    Dim stockvolume As Double
+    Dim SummaryTable_Row As Integer
+    
+    stockvolume = 0
+    
+    SummaryTable_Row = 2
+    
+    'Add Headers for SummaryTable
+    ws.Range("I1").Value = "Ticker"
+    ws.Range("J1").Value = " Total Stock Volume"
+    
+    'Create a loop for tickers and stock volumes
+    For i = 2 To 797711
+    
+        If ws.Cells(i + 1, 1).Value <> ws.Cells(i, 1).Value Then
+            ticker = ws.Cells(i, 1).Value
+            
+            stockvolume = stockvolume + ws.Cells(i, 7).Value
+                
+            ws.Range("I" & SummaryTable_Row).Value = ticker
+            ws.Range("J" & SummaryTable_Row).Value = stockvolume
+                
+            SummaryTable_Row = SummaryTable_Row + 1
+                
+            'Reset stock volume when different ticker is sensed
+            stockvolume = 0
+        
+        Else
+            
+            stockvolume = stockvolume + ws.Cells(i, 7).Value
+        
+        End If
+        
+    Next i
+    
+    'AutoFit Headers
+    ws.Range("A:J").Columns.AutoFit
+Next ws
+
+End Sub
