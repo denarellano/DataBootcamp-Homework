@@ -3,13 +3,18 @@ function buildMetadata(sample) {
   // @TODO: Complete the following function that builds the metadata panel
 
   // Use `d3.json` to fetch the metadata for a sample
+  d3.json(`/metadata/${sample}`).then(function(data){
     // Use d3 to select the panel with id of `#sample-metadata`
-
+    var panel = d3.select('#sample-metadta');
     // Use `.html("") to clear any existing metadata
-
+    panel.html("");
     // Use `Object.entries` to add each key and value pair to the panel
     // Hint: Inside the loop, you will need to use d3 to append new
     // tags for each key-value in the metadata.
+    Oject.entries(data).forEach(([key, value]) => {
+      panel.append('h6').text(`${key}: ${value}`)
+    });
+  })
 
     // BONUS: Build the Gauge Chart
     // buildGauge(data.WFREQ);
@@ -18,7 +23,40 @@ function buildMetadata(sample) {
 function buildCharts(sample) {
 
   // @TODO: Use `d3.json` to fetch the sample data for the plots
+  d3.json(`/samples/${sample}`).then(function(data){
+    var pieTrace = {
+      labels: data.otu_ids.slice(0,10),
+      values: data.sample_values.slice(0,10),
+      hovertext: 'hovertext',
+      type: 'pie'
+    };
 
+    var layoutPie = {
+      margin: {t:0, l:0}
+    };
+
+    Plotly.newPlot('pie', pieTrace, layoutPie);
+
+    var bubbleTrace = {
+      x: data.otu_ids,
+      y: data.sample_values,
+      text: data.otu_labels,
+      mode: 'markers',
+      marker: {
+        size: data.sample_values,
+        color: data.otu_ids,
+        colorscale: 'Earth'
+      }
+    };
+
+    var layoutBubble = {
+      margin: {t:0},
+      hovermode: 'closest',
+      xaxis: {title: 'OTU ID'}
+    };
+
+    Plotly,newPlot('bubble', bubbleTrace, layoutBubble);
+  })
     // @TODO: Build a Bubble Chart using the sample data
 
     // @TODO: Build a Pie Chart
